@@ -1,0 +1,1 @@
+"""Module for reports related routes."""
