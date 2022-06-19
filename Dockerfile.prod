@@ -1,0 +1,10 @@
+FROM python:3.8
+
+WORKDIR /app
+ADD requirenents.txt ./
+ADD .env ./
+RUN pip install -r requirenents.txt
+
+COPY api/ ./api/
+
+EXPOSE 5000
