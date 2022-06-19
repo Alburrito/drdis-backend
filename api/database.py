@@ -1,36 +1,21 @@
 """Module for database connection"""
+from os import environ
 from pymongo import MongoClient
 
-from exceptions import CollectionNotFound
-
+# CONSTANTS
 BUG_REPORTS_COLLECTION = "bug_reports"
 
-def connect_to_mongo_database(host: str, port: int, db_name: str):
-    """
-    Connect to the mongo client.
+# ENV VARIABLES
+host = environ.get("DB_HOST", 'localhost')
+port = int(environ.get("DB_PORT", '27017'))
+db_name = environ.get("DB_NAME", "bug_reports_db")
 
-    Args:
-        host: hostname of the mongo client.
-        port: port of the mongo client.
-        db_name: name of the database.
-    """
-    client = MongoClient(host, port)
-    db = client[db_name]
-    return db
+# CLIENT AND DATABASE CONNECTION
+client = MongoClient(host, port)
+conn_db = client[db_name]
 
-def get_db_collection(db: MongoClient, collection_name: str):
-    """
-    Get the collection from the database.
-
-    Args:
-        db: database connection.
-        collection_name: name of the collection.
-    Returns:
-        collection: collection from the database.
-    Exceptions:
-        CollectionNotFound. If the collection does not exist.
-    """
-    if collection_name not in db.list_collection_names():
-        raise CollectionNotFound("collection_name")
-
-    return db[collection_name]
+# COLLECTIONS
+if BUG_REPORTS_COLLECTION in conn_db.list_collection_names():
+    reports_collection = conn_db[BUG_REPORTS_COLLECTION]
+else:
+    reports_collection = conn_db.create_collection(BUG_REPORTS_COLLECTION)

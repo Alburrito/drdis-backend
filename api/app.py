@@ -8,7 +8,6 @@ from flask_cors import CORS
 
 # Internal imports
 from config import LocalConfig, TestingConfig, StagingConfig, ProductionConfig
-from database import connect_to_mongo_database
 
 
 def create_app(environment = None):
@@ -34,27 +33,23 @@ def create_app(environment = None):
 
     # Initializations
     CORS(app)
-    conn_db = connect_to_mongo_database(
-        app.config['DB_HOST'],
-        int(app.config['DB_PORT']),
-        app.config['DB_NAME']
-    )
+
     # Flask blueprints
 
     # Other
     Swagger(app)
 
-    return app, conn_db
+    return app
 
 
-flask_app, conn_db = create_app()
+flask_app = create_app()
 
 @flask_app.route('/', methods=['GET'])
 def index():
     """
     Endpoint to test if the API is running.
     ---
-    returns:
+    responses:
         200:
             description: Server returns a welcome
             type: string

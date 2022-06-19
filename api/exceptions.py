@@ -7,22 +7,20 @@ class ApiException(Exception):
         self.message = message
         super().__init__(self.message)
 
+class MissingParameters(ApiException):
+    """Raised when one or more parameters are missing"""
+    def __init__(self, missing_params: list):
+        super().__init__(f"Missing parameters: {missing_params}")
 
-# Database
-class CollectionNotFound(ApiException):
-    """
-    Exception raised when a database collection is not found
-    
-    Args:
-        collection_name: name of the collection
-    """
-    def __init__(self, collection_name: str):
-        super().__init__(f"Collection '{collection_name}' not found")
+class InvalidParameters(ApiException):
+    """Raised when one or more parameters are invalid"""
+    def __init__(self, invalid_params: list):
+        super().__init__(f"Invalid parameters: {invalid_params}")
 
 # Reports
 class NoReportsFound(ApiException):
     """
-    Exception raised when no reports are found
+    Exception raised when no reports are found in the database.
     """
     def __init__(self):
         super().__init__("No reports found")
@@ -36,3 +34,13 @@ class ReportNotFound(ApiException):
     """
     def __init__(self, report_id: str):
         super().__init__(f"Report '{report_id}' not found")
+
+class ReportAlreadyExists(ApiException):
+    """
+    Exception raised when a report already exists (duplicated report_id)
+    
+    Args:
+        report_id: id of the report
+    """
+    def __init__(self, report_id: str):
+        super().__init__(f"Report with report_id '{report_id}' already exists")
